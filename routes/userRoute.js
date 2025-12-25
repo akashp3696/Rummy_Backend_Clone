@@ -1,0 +1,20 @@
+const router = require("express").Router()
+const user = require("../controller/userController")
+const { checkAdmin, checkLogin } = require("../middleware/authMiddleware")
+const upload = require("../middleware/Multer")
+
+router.post("/sendotp", user.sendOTP)
+router.post("/login", user.loginWithOTP)
+router.put("/update", checkLogin, user.updateUser)
+router.put("/account", checkLogin, user.updateAccount)
+router.put("/update", checkLogin, user.updateUser)
+router.get("/all", user.getAllUsers)
+router.get("/single/:id", user.getUserById)
+router.put("/upload", checkLogin, upload.fields([{ name: "pan", maxCount: 1 }, { name: "aadharFront", maxCount: 1 }, {name:"aadharBack", maxCount:1}]), user.uploadDocument)
+router.put("/kyc-status/:userId", checkAdmin, user.updateKYCStatus)
+router.get("/kyc", checkAdmin, user.getUsersByKYCStatus)
+router.put("/profileimg", checkLogin, upload.single("profileimg"), user.uploadProfilePic)
+router.post("/generate/refferral", checkLogin, user.generateReferralCode)
+router.get("/verify/refferralcode", user.checkReferralCode)
+
+module.exports = router;
